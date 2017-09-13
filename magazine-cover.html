@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`magazine-cover`
+A LRN element
+
+@demo demo/index.html
+-->
+
+<dom-module id="magazine-cover">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>[[title]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'magazine-cover',
+
+      properties: {
+        title: {
+          type: String,
+          value: 'magazine-cover',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
