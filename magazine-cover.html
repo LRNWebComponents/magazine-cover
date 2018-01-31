@@ -1,4 +1,8 @@
-<link rel="import" href="imports.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../hax-body-behaviors/hax-body-behaviors.html">
 
 <!--
 `magazine-cover`
@@ -20,19 +24,21 @@ Example:
       :host {
         display: block;
         background-color: #222222;
+        overflow: hidden;
+        --magazine-cover-text-color: #EEEEEE;
       }
       .overlay {
         left: 0;
         right: 0;
-        min-height: 26vh;
-        margin: -30vh 0 0 0;
+        min-height: 30vh;
+        margin: -38vh 0 0 0;
         background-color:rgba(0, 0, 0, 0.8);
         padding: 2em;
         position: relative;
       }
       #image {
         opacity: .5;
-        filter: alpha(opacity=30);
+        filter: alpha(opacity=50);
         transition: opacity 0.3s linear;
       }
       #image:hover {
@@ -40,68 +46,95 @@ Example:
         filter: alpha(opacity=90);
       }
       #header {
-        color: #FFFFFF;
-        font-size: 2.5em;
+        color: var(--magazine-cover-text-color);
+        font-size: 3em;
         padding: 0;
         margin: 0;
+        font-weight: bold;
       }
       #subheader {
-        color: #FFFFFF;
-        font-size: 1.25em;
+        color: var(--magazine-cover-text-color);
+        font-size: 1.4em;
         padding: 0;
-        padding: 0 0 0 1em;
-        margin: 0 0 1.5em 0;
+        margin: .2em 0 1em 0;
         font-style: italic;
         font-weight: normal;
       }
       #body {
-        color: #FFFFFF;
+        color: var(--magazine-cover-text-color);
         padding: 0;
         margin: 0;
-        font-size: .8em;
-        padding: 0 0 0 1em;
-        margin: 0 0 3em 0;
+        font-size: 1.2em;
+        padding: 0 0 0 .2em;
+        margin: 0 0 2em 0;
       }
       #action {
-        color: #FFFFFF;
+        color: var(--magazine-cover-text-color);
         text-transform: none;
-        font-size: 1em;
+        font-size: 1.5em;
         font-style: italic;
         font-weight: bold;
         background-color: #000000;
-        border: 1px solid white;
+        border: 1px solid var(--magazine-cover-text-color);
         border-radius: .5em;
         transition: background 0.3s linear;
         width: 100%;
         margin: 0;
       }
-      #action:hover {
-        background-color:rgba(255, 255, 255, 0.25);
-      }
-      #action:focus {
-        background-color:rgba(255, 255, 255, 0.25);
+      #action:hover,#action:focus {
+        border-color: #FFFFFF;
+        color: #FFFFFF;
+        background-color:rgba(255, 255, 255, 0.2);
       }
       #actionlink {
-        color: #FFFFFF;
-        width: 50%;
+        color: var(--magazine-cover-text-color);
         display: flex;
         text-decoration: none;
         border-radius: .5em;
       }
+      #icon {
+        width: 1.5em;
+        height: 1.5em;
+        font-size: 1.5em;
+      }
       #label {
         text-shadow: -1px 1px 2px #000000;
+      }
+      @media screen and (max-width: 900px) {
+        #header {
+          font-size: 2em;
+        }
+        #subheader {
+          font-size: 1em;
+        }
+        #body {
+          font-size: 1em;
+        }
+        #action {
+          font-size: 1.2em;
+        }
+      }
+      @media screen and (max-width: 650px) {
+        #body {
+          font-size: .8em;
+        }
+        #action {
+          font-size: 1em;
+        }
+        .overlay {
+          margin: -50vh 0 0 0;
+          padding: 1em;
+        }
       }
     </style>
     <iron-image style="width:100%; height:80vh; background-color: #222222;" src="[[image]]" preload fade sizing="cover" id="image"></iron-image>
     <div class="overlay">
       <h2 id="header" hidden$="[[!header]]">[[header]]</h2>
-      <h3 id="subheader" hidden$="[[!subheader]]">[[subheader]]</h3>
-      <div id="body">
-        <p><slot></slot></p>
-      </div>
+      <div id="subheader" hidden$="[[!subheader]]">[[subheader]]</div>
+      <p id="body">[[text]]<slot></slot></p>
       <a tabindex="-1" href$="[[link]]" id="actionlink">
         <paper-button raised id="action">
-        <span id="label">[[action]]<iron-icon icon="[[icon]]"></iron-icon></span>
+        <span id="label">[[action]]<iron-icon id="icon" icon="[[icon]]" hidden$="[[!icon]]"></iron-icon></span>
         </paper-button>
       </a>
     </div>
@@ -111,50 +144,46 @@ Example:
     Polymer({
 
       is: 'magazine-cover',
-
+      behaviors: [
+        HAXBehaviors.PropertiesBehaviors,
+      ],
       properties: {
         /**
          * Title / heading
          */
         header: {
           type: String,
-          reflectToAttribute: true,
-          notify: true,
-          value: false,
         },
         /**
          * A secondary title
          */
         subheader: {
           type: String,
-          reflectToAttribute: true,
-          notify: true,
-          value: false,
+        },
+        /**
+         * Internal text.
+         */
+        text: {
+          type: String,
         },
         /**
          * Title / heading
          */
         image: {
           type: String,
-          reflectToAttribute: true,
-          notify: true,
         },
         /**
          * Call to action
          */
         action: {
           type: String,
-          reflectToAttribute: true,
-          notify: true,
-          value: "Touch to learn more"
+          value: "Touch to learn more",
         },
         /**
          * Call to action icon
          */
         icon: {
           type: String,
-          reflectToAttribute: true,
-          notify: true,
           value: "trending-flat",
         },
         /**
@@ -162,11 +191,65 @@ Example:
          */
         link: {
           type: String,
-          reflectToAttribute: true,
-          notify: true,
         },
       },
-
+      /**
+       * Attached.
+       */
+      attached: function() {
+        // Establish hax properties if they exist
+        let props = {
+          'canScale': false,
+          'canPosition': false,
+          'canEditSource': false,
+          'gizmo': {
+            'title': 'Cover image',
+            'description': 'Present a full screen cover image with a call to action. Good for starting off a series of content',
+            'icon': 'flip-to-front',
+            'color': 'teal',
+            'groups': ['Image', 'Media', 'Presentation'],
+            'handles': [
+              {
+                'type': 'image',
+                'source': 'image',
+                'title': 'header',
+                'caption': 'subheader',
+                'citation': 'subheader',
+                'description': 'text',
+              }
+            ],
+            'meta': {
+              'author': 'LRNWebComponents'
+            }
+          },
+          'settings': {
+            'quick': [
+              {
+                'property': 'src',
+                'title': 'Image',
+                'description': 'The URL for the image.',
+                'inputMethod': 'textfield',
+                'icon': 'link',
+                'required': true,
+                'validationType': 'url',
+              },
+            ],
+            'configure': [
+              {
+                'property': 'src',
+                'title': 'Image',
+                'description': 'The URL for the image.',
+                'inputMethod': 'textfield',
+                'icon': 'link',
+                'required': true,
+                'validationType': 'url',
+              },
+            ],
+            'advanced': []
+          }
+        };
+        this.setHaxProperties(props);
+      },
     });
   </script>
 </dom-module>
